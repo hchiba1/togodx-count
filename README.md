@@ -1,1 +1,1 @@
-# SPARQL queries to count IDs for each attribute in TogoDX
+SPARQL queries to count IDs for each attribute in TogoDX.
