@@ -1,0 +1,16 @@
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX togovar: <http://togovar.biosciencedbc.jp/vocabulary/>
+PREFIX clinvar:  <http://purl.jp/bio/10/clinvar/>
+
+SELECT (COUNT (DISTINCT ?tgv_id) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/variation>
+FROM <http://rdf.integbio.jp/dataset/togosite/variation/annotation/clinvar>
+FROM <http://rdf.integbio.jp/dataset/togosite/clinvar>
+WHERE {  
+  ?togovar dct:identifier ?tgv_id ;
+      togovar:condition ?annotation .
+  ?annotation rdfs:seeAlso ?clinvar .
+  ?clinvar clinvar:interpreted_record ?record .
+  # ?record clinvar:rcv_list/clinvar:rcv_accession/clinvar:interpretation ?category . 
+}

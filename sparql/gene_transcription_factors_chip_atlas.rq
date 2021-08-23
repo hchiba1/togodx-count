@@ -1,0 +1,7 @@
+PREFIX refexo: <http://purl.jp/bio/01/refexo#>
+
+SELECT (COUNT(DISTINCT ?ensg) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/chip_atlas_ncbigene_ensembl>
+WHERE {
+  ?ensg refexo:ncbigene ?ncbigene .
+}

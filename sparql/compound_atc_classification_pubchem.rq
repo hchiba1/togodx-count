@@ -1,0 +1,15 @@
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT (COUNT (DISTINCT ?cid) AS ?total_count)
+WHERE {
+  ?attr a sio:CHEMINF_000562 ;
+      sio:is-attribute-of ?cid ; 
+      sio:has-value  ?WHO_INN ;
+      dcterms:subject ?WHO_ATC .
+  ?WHO_ATC a skos:concept .  
+}
+# MeSH IDが入っていることがあるのを捨てる。
+# ATCコード http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_xxxx
+# MeSH ID  http://id.nlm.nih.gov/mesh/Mxxxxxx

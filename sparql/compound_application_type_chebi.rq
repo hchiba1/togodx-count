@@ -1,0 +1,15 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+
+SELECT DISTINCT (COUNT (DISTINCT ?compound) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/chebi>
+WHERE 
+{
+  ?compound rdfs:subClassOf [
+      a owl:Restriction ;
+      owl:onProperty obo:RO_0000087 ; # has_role
+      owl:someValuesFrom ?role
+  ] .
+  ?role rdfs:subClassOf+ obo:CHEBI_33232 . # application
+}

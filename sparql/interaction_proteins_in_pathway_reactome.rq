@@ -1,0 +1,20 @@
+PREFIX biopax: <http://www.biopax.org/release/biopax-level3.owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT (COUNT(DISTINCT ?uniprot) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/reactome>
+WHERE {
+  VALUES ?reactome_id { "R-HSA-1474244"^^xsd:string "R-HSA-397014"^^xsd:string "R-HSA-9612973"^^xsd:string "R-HSA-1430728"^^xsd:string "R-HSA-73894"^^xsd:string "R-HSA-5357801"^^xsd:string "R-HSA-4839726"^^xsd:string "R-HSA-8953897"^^xsd:string "R-HSA-74160"^^xsd:string "R-HSA-168256"^^xsd:string "R-HSA-109582"^^xsd:string "R-HSA-69306"^^xsd:string "R-HSA-1500931"^^xsd:string "R-HSA-392499"^^xsd:string "R-HSA-1266738"^^xsd:string "R-HSA-1643685"^^xsd:string "R-HSA-162582"^^xsd:string "R-HSA-8953854"^^xsd:string "R-HSA-8963743"^^xsd:string "R-HSA-1474165"^^xsd:string "R-HSA-400253"^^xsd:string "R-HSA-382551"^^xsd:string "R-HSA-9609507"^^xsd:string "R-HSA-5653656"^^xsd:string "R-HSA-1640170"^^xsd:string "R-HSA-112316"^^xsd:string "R-HSA-1852241"^^xsd:string }
+  ?pathway biopax:xref/biopax:id ?reactome_id ;
+      biopax:pathwayComponent* ?reaction .
+  ?reaction biopax:left|biopax:right|biopax:product|^biopax:controlled/biopax:controller ?component .
+  ?component (biopax:memberPhysicalEntity|biopax:component)* ?protein .
+  # {
+  #   ?component biopax:component* ?protein .
+  # }
+  # UNION
+  # {
+  #   ?component biopax:memberPhysicalEntity+/biopax:component* ?protein .
+  # }
+  ?protein biopax:entityReference/biopax:xref [ biopax:db "UniProt"^^xsd:string ; biopax:id ?uniprot ] .
+}

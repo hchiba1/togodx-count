@@ -1,0 +1,7 @@
+PREFIX refexo: <http://purl.jp/bio/01/refexo#>
+
+SELECT (COUNT(DISTINCT ?ensg) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/refex_tissue_specific_genes_gtex_v6>
+WHERE {
+  ?ensg a refexo:GTEx_v6_ts_evaluated_gene .
+}

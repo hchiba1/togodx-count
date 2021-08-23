@@ -1,0 +1,8 @@
+PREFIX orth: <http://purl.org/net/orth#>
+PREFIX taxid: <http://identifiers.org/taxonomy/>
+
+SELECT (COUNT(DISTINCT ?human_gene) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/homologene/data>
+WHERE {
+  ?human_gene orth:taxon taxid:9606 .
+}

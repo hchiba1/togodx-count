@@ -1,0 +1,9 @@
+PREFIX oboinowl: <http://www.geneontology.org/formats/oboInOwl#>
+
+SELECT (COUNT(DISTINCT ?mondo) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/mondo>
+WHERE {
+  ?mondo oboinowl:hasDbXref ?id .
+  FILTER isURI(?mondo)
+  FILTER(!STRSTARTS(str(?id), "http"))
+}

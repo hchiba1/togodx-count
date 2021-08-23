@@ -1,0 +1,8 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX nando: <http://nanbyodata.jp/ontology/NANDO_>
+
+SELECT (COUNT (DISTINCT ?nando) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/nando>
+WHERE {
+  ?nando rdfs:subClassOf* nando:0000001 .
+}

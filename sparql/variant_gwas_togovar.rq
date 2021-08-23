@@ -1,0 +1,16 @@
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX efo: <http://www.ebi.ac.uk/efo/>
+PREFIX terms: <http://med2rdf.org/gwascatalog/terms/>
+
+SELECT (COUNT (DISTINCT ?id) AS ?total_count) 
+FROM <http://rdf.integbio.jp/dataset/togosite/variation>
+FROM <http://rdf.integbio.jp/dataset/togosite/gwas-catalog>
+FROM <http://rdf.integbio.jp/dataset/togosite/efo>
+WHERE {
+  ?togovar dct:identifier ?id ;
+      rdfs:seeAlso ?dbsnp .
+  ?assoc terms:dbsnp_url ?dbsnp ;
+      terms:mapped_trait_uri ?efo .
+  ?efo rdfs:subClassOf+ efo:EFO_0000001 .
+}

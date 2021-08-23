@@ -1,0 +1,17 @@
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX refexo:  <http://purl.jp/bio/01/refexo#>
+PREFIX ensembl: <http://rdf.ebi.ac.uk/terms/ensembl/>
+
+SELECT (COUNT (DISTINCT ?ensg) AS ?toal_count)
+WHERE {
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/refex_gtex_v8_summary> {
+    ?refex a refexo:RefExEntry ;
+        refexo:isMeasurementOf ?ensg .
+  }  
+  GRAPH <http://rdf.integbio.jp/dataset/togosite/ensembl> {
+    ?ensg a ?type .
+    VALUES ?type { ensembl:lncRNA ensembl:TEC obo:SO_0001217 obo:SO_0000336 }
+    # SO_0001217 "protein_coding_gene" SO_0000336 "pseudogene"
+    MINUS { ?ensg a ensembl:rRNA_pseudogene }
+  }
+}

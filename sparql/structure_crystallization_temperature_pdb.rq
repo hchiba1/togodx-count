@@ -1,0 +1,11 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX pdbo: <https://rdf.wwpdb.org/schema/pdbx-v50.owl#>
+PREFIX taxid: <http://identifiers.org/taxonomy/>
+
+SELECT (COUNT(DISTINCT ?pdb) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/pdbj>
+WHERE {
+  ?pdb a pdbo:datablock ;
+    # pdbo:has_entityCategory/pdbo:has_entity/rdfs:seeAlso taxid:9606 ;
+      pdbo:has_exptl_crystal_growCategory/pdbo:has_exptl_crystal_grow/pdbo:exptl_crystal_grow.temp ?temperature .
+}

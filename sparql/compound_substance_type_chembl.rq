@@ -1,0 +1,7 @@
+PREFIX chembl: <http://rdf.ebi.ac.uk/terms/chembl#> 
+
+SELECT (COUNT(DISTINCT ?molecule) as ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+WHERE {
+  ?molecule chembl:substanceType ?substance_type .
+}

@@ -1,0 +1,8 @@
+PREFIX nextprot: <http://nextprot.org/rdf#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT (COUNT(DISTINCT ?entity) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/nextprot>
+WHERE {
+  ?entity ^skos:exactMatch/nextprot:existence ?category .
+}

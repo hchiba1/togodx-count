@@ -1,0 +1,7 @@
+PREFIX chembl: <http://rdf.ebi.ac.uk/terms/chembl#> 
+
+SELECT (COUNT(DISTINCT ?mec) as ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/chembl>
+WHERE {
+  ?mec a chembl:Mechanism .
+}
