@@ -1,0 +1,7 @@
+{
+  "name": "togodx-count",
+  "version": "0.0.1",
+  "bin": {
+    "togodx-parse-json": "./bin/togodx-parse-json.js"
+  }
+}
