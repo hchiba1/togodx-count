@@ -3,13 +3,18 @@ const program = require('commander');
 const fs = require('fs').promises;
 
 program
+  .option('-v, --verbose', 'verbose')
   .arguments('[INPUT]')
   .parse(process.argv);
+
+const opts = program.opts();
 
 let rootId;
 let mapId = new Map();
 let mapLeaf = new Map();
 let mapParent = new Map();
+let mapCategory = new Map();
+let mapCategoryId = new Map();
 let isDAG = false;
 let countDAG = 0;
 let dagExample = '';
@@ -51,7 +56,13 @@ let totalIds = 0;
       if (!mapLeaf.has(elem.id)) {
         mapLeaf.set(elem.id, true);
       }
-    } else {
+      if (mapCategory.has(elem.parent)) {
+        const count = mapCategory.get(elem.parent);
+        mapCategory.set(elem.parent, count + 1);
+      } else {
+        mapCategory.set(elem.parent, 1);
+      }
+    } else if (elem.parent) {
       if (mapParent.has(elem.id)) {
         isDAG = true;
         countDAG++;
@@ -60,6 +71,7 @@ let totalIds = 0;
         mapParent.set(elem.id, elem.parent)
       }
     }
+    mapCategoryId.set(elem.id, elem.label);
   });
 
   if (mapLeaf.size) {
@@ -71,6 +83,11 @@ let totalIds = 0;
     }
     if (isDAG) {
       console.log(`DAG ${countDAG} ex. ${dagExample}`);
+    }
+    if (opts.verbose) {
+      mapCategory.forEach((v, k) => {
+        console.log(`${k} ${v}`, mapCategoryId.get(k));
+      });
     }
   } else {
     process.stdout.write(`${totalIds} ids`);
