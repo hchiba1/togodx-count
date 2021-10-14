@@ -6,11 +6,15 @@ program
   .arguments('[INPUT]')
   .parse(process.argv);
 
-let count = {};
-let categories = [];
-let root_count = 0;
-let leaves = 0;
-let checkLeaf = new Map();
+let rootId;
+let mapId = new Map();
+let mapLeaf = new Map();
+let mapParent = new Map();
+let isDAG = false;
+let countDAG = 0;
+let dagExample = '';
+let totalLeaves = 0;
+let totalIds = 0;
 
 (async () => {
   let input;
@@ -20,69 +24,63 @@ let checkLeaf = new Map();
     console.error(`cannot open ${program.args[0]}`);
     process.exit(1);
   }
-  input = input.toString();
-  const obj = JSON.parse(input);
+  const obj = JSON.parse(input.toString());
   obj.forEach((elem) => {
     if (!elem.id) {
       console.log(elem);
     }
-    if (!elem.label) {
-      // console.log(elem);
+    if (!mapId.has(elem.id)) {
+      mapId.set(elem.id, true);
     }
-    if (elem.root === true) {
-      root_count += 1;
-      if (elem.label === 'root node') {
-        // console.log('root');
-      } else {
-        // console.log(elem);
-      }
-    } else if (elem.root) {
-      // console.log(elem);
-    } else if (elem.parent) {
-      if (elem.leaf === true) {
-        leaves += 1;
-        if (checkLeaf.has(elem.id)) {
-        } else {
-          checkLeaf.set(elem.id, true);
+    totalIds++;
+    // if (!elem.label) {
+    //   console.log(elem);
+    // }
+
+    if (elem.root) {
+      if (elem.root === true) {
+        if (rootId) {
+          console.log('error: rootId=', rootId);
         }
-      }
-      if (count[elem.parent]) {
-        count[elem.parent] = count[elem.parent] + 1;
+        rootId = elem.id;
       } else {
-        count[elem.parent] = 1;
+        console.log('error: root is', elem);
+      }
+    } else if (elem.leaf === true) {
+      totalLeaves += 1;
+      if (!mapLeaf.has(elem.id)) {
+        mapLeaf.set(elem.id, true);
       }
     } else {
-      // console.log(elem);
+      if (mapParent.has(elem.id)) {
+        isDAG = true;
+        countDAG++;
+        dagExample = `${elem.id} (${elem.label})` + ' -> ' + mapParent.get(elem.id) + ', ' + elem.parent;
+      } else {
+        mapParent.set(elem.id, elem.parent)
+      }
     }
-    // } else if (elem.leaf === true) {
-      // if (elem.parent) {
-      //   const category = elem.parent;
-      //   if (count[category]) {
-      //     count[category] = count[category] + 1;
-      //   } else {
-      //     count[category] = 1;
-      //   }
-      // } else {
-      //   console.log(elem);
-      // }
-    //   leaves ++;
-    // } else {
-      // categories.push(elem.id);
-    // }
   });
 
-  // let total = 0;
-  // categories.forEach((cat) => {
-  //   if (count[cat]) {
-  //     total += count[cat];
-  //   } else {
-      // console.log('cannot find', cat);
-  //   }
-  // });
-
-  if (root_count != 1) {
-    // process.stdout.write(String(root_count) + ' root ');
+  if (mapLeaf.size) {
+    process.stdout.write(`${totalLeaves} leaves`);
+    if (mapLeaf.size === totalLeaves) {
+      console.log(' (unique)');
+    } else {
+      process.stdout.write(`\n${mapLeaf.size} unique leaves\n`);
+    }
+    if (isDAG) {
+      console.log(`DAG ${countDAG} ex. ${dagExample}`);
+    }
+  } else {
+    process.stdout.write(`${totalIds} ids`);
+    if (mapId.size === totalIds) {
+      console.log(' (unique)');
+    } else {
+      process.stdout.write(`\n${mapId.size} unique ids\n`);
+    }
+    if (isDAG) {
+      console.log(`duplicated ${countDAG} ex. ${dagExample}`);
+    }
   }
-  // console.log(Object.keys(count).length, 'categories', leaves, 'leaves', checkLeaf.size);
-  console.log(checkLeaf.size);
 })();
