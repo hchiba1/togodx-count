@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const program = require('commander');
 const fs = require('fs');
-// const fs = require('fs').promises;
 
 program
   .option('-v, --verbose', 'verbose')
@@ -26,7 +25,6 @@ let totalIds = 0;
   let input;
   if (program.args[0]) {
     try {
-      // input = await fs.readFile(program.args[0], "utf8");
       input = fs.readFileSync(program.args[0], "utf8");
     } catch (err) {
       console.error(`cannot open ${program.args[0]}`);
@@ -37,7 +35,6 @@ let totalIds = 0;
     process.exit(1);
   } else {
     try {
-      // input = await fs.readFile(process.stdin.fd).toString();
       input = fs.readFileSync(process.stdin.fd).toString();
     } catch (err) {
       process.exit(1);
