@@ -1,0 +1,30 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time -v
+
+PREFIX up: <http://purl.uniprot.org/core/>
+PREFIX taxon: <http://purl.uniprot.org/taxonomy/>
+
+# SELECT ?uniprot ?mass
+SELECT ?uniprot ?mass2
+# SELECT ?mass_2 (COUNT(DISTINCT ?uniprot) AS ?count)
+# SELECT (COUNT(DISTINCT ?uniprot) AS ?count)
+FROM <http://rdf.integbio.jp/dataset/togosite/uniprot>
+WHERE {
+  {
+    SELECT ?uniprot ?mass
+    WHERE {
+      ?uniprot a up:Protein ;
+          up:organism taxon:9606 ;
+          up:sequence/up:mass ?mass ;
+          up:proteome ?proteome .
+      FILTER regex(str(?proteome), "UP000005640")
+    }
+  }
+  # BIND(CEIL(xsd:float(?mass) / 1000 / 10) - 1 AS ?mass_2)
+  BIND(xsd:float(?mass)/1000 AS ?mass2)
+}
+# ORDER BY ?mass2
+# ORDER BY ?mass
+# ORDER BY DESC(?mass)
+# LIMIT 10

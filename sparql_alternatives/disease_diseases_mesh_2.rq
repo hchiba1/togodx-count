@@ -1,0 +1,23 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time -v
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
+PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+PREFIX tree: <http://id.nlm.nih.gov/mesh/>
+
+SELECT DISTINCT ?tree ?tree_label ?mesh ?mesh_label
+# SELECT (COUNT(DISTINCT ?mesh) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/mesh>
+WHERE {
+  ?tree a meshv:TreeNumber .
+  MINUS {
+    ?tree meshv:parentTreeNumber ?parent .
+  }
+  FILTER (CONTAINS(STR(?tree), "mesh/C"))
+  ?mesh rdfs:label ?mesh_label .
+  ?mesh meshv:treeNumber/meshv:parentTreeNumber* ?tree .
+  ?tree ^meshv:treeNumber/rdfs:label ?tree_label .
+  FILTER(lang(?tree_label) = "en")
+}

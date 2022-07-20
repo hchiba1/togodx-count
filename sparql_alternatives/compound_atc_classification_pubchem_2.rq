@@ -1,0 +1,30 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time
+
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX compound: <http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID>
+PREFIX concept: <http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_>
+PREFIX pubchemv: <http://rdf.ncbi.nlm.nih.gov/pubchem/vocabulary#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT (sum(?count) as ?total)
+WHERE {
+  {
+    SELECT ?category ?label (COUNT (DISTINCT ?cid) AS ?count)
+    WHERE {
+      ?attr a sio:CHEMINF_000562 ;
+          sio:is-attribute-of ?cid ; 
+          sio:has-value  ?WHO_INN ;
+          dcterms:subject ?WHO_ATC .
+      ?WHO_ATC skos:broader* ?category ;
+          a skos:concept .
+          filter(strlen(str(?category)) = 49)     # regex(str(?category),http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_[A-Z]$) 
+      ?category skos:prefLabel  ?label .
+    } group by ?label ?category
+  }  
+}
+# MeSH IDが入っていることがあるのを捨てる。
+# ATCコード  http://rdf.ncbi.nlm.nih.gov/pubchem/concept/ATC_xxxx
+# MeSH ID    http://id.nlm.nih.gov/mesh/Mxxxxxx

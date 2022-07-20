@@ -1,0 +1,16 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX taxid: <http://identifiers.org/taxonomy/>
+
+SELECT (COUNT(DISTINCT ?ensg) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
+FROM <http://rdf.integbio.jp/dataset/togosite/so>
+WHERE {
+  ?ensg obo:RO_0002162 taxid:9606 ; # in taxon
+      a ?type .
+  ?type rdfs:subClassOf+ obo:SO_0000704 . # gene
+}

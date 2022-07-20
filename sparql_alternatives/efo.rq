@@ -1,0 +1,17 @@
+#!/usr/bin/env spang2
+## @endpoint togosite
+# @endpoint https://test100.biosciencedbc.jp/sparql
+# @option --time
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX efo: <http://www.ebi.ac.uk/efo/>
+
+# SELECT *
+SELECT (COUNT (DISTINCT ?term) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/efo>
+WHERE {
+  ?term rdfs:subClassOf* efo:EFO_0000001 .
+  ?term a owl:Class .
+  # ?term rdfs:subClassOf efo:EFO_0000001 .
+  # ?term rdfs:label ?label .
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time
+
+SELECT (COUNT (DISTINCT ?nando) AS ?total_count)
+WHERE {
+  VALUES ?parent {  nando:0000001  }
+ GRAPH <http://rdf.integbio.jp/dataset/togosite/nando> { 
+    ?nando rdfs:subClassOf* ?parent.
+    ?nando rdfs:label ?label.
+    FILTER (lang(?label) = "en")
+  }
+} 

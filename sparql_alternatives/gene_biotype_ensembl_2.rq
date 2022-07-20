@@ -1,0 +1,15 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time
+
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX taxid: <http://identifiers.org/taxonomy/>
+
+SELECT (COUNT(DISTINCT ?ensg) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/ensembl>
+WHERE {
+  ?ensg obo:RO_0002162 taxid:9606 ; # in taxon
+      a ?type .
+  ?enst obo:SO_transcribed_from ?ensg .
+  FILTER regex(str(?type), "/terms/ensembl/")
+}

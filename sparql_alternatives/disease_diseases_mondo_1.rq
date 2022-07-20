@@ -1,0 +1,16 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time
+
+PREFIX mondo: <http://purl.obolibrary.org/obo/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT (COUNT (DISTINCT ?mondo) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/mondo>
+WHERE {
+  VALUES ?parent { mondo:MONDO_0000001 }
+  ?category rdfs:subClassOf ?parent.
+  ?mondo rdfs:subClassOf* ?category.
+  ?mondo rdf:type owl:Class. 
+}

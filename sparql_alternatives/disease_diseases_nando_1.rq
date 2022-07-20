@@ -1,0 +1,14 @@
+#!/usr/bin/env spang2
+# @endpoint https://integbio.jp/togosite/sparql
+# @option --time
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX nando: <http://nanbyodata.jp/ontology/nando#>
+
+SELECT (COUNT (DISTINCT ?nando) AS ?total_count)
+FROM <http://rdf.integbio.jp/dataset/togosite/nando>
+WHERE {
+  ?nando rdfs:subClassOf* nando:0000001 .
+  # ?nando rdfs:label ?label .
+  # FILTER (lang(?label) = "en")
+}
