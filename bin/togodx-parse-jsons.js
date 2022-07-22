@@ -43,9 +43,8 @@ function printAttributes(json) {
     category.attributes.forEach((attrId) => {
       const attr = obj.attributes[attrId];
       console.log();
-      console.log(attr.datamodel);
       try {
-        parseJson(attr.dataset, attrId);
+        parseJson(attr.dataset, attrId, attr);
       } catch (err) {
         console.error(`cannot parse ${attrId}`);
         process.exit(1);
@@ -54,9 +53,7 @@ function printAttributes(json) {
   });
 }
 
-function parseJson(dataset, attrId) {
-  // console.log(`= ${dataset}\t${attrId}`);
-
+function parseJson(dataset, attrId, attr) {
   let input;
   input = fs.readFileSync(attrId, "utf8");
   const obj = JSON.parse(input.toString());
@@ -74,13 +71,16 @@ function parseJson(dataset, attrId) {
   let totalIds = 0;
 
   obj.forEach((elem) => {
+    if (attr.datamodel === 'distribution') {
+      saveDatasetId(dataset, elem.id);
+      totalIds++;
+    }
     if (!elem.id) {
       console.log(elem);
-n    }
+    }
     if (!mapId.has(elem.id)) {
       mapId.set(elem.id, true);
     }
-    totalIds++;
     // if (!elem.label) {
     //   console.log(elem);
     // }
@@ -119,12 +119,9 @@ n    }
   });
 
   if (mapLeaf.size) {
-    console.log(`= ${mapLeaf.size} ${dataset}\t${attrId}`);
-    process.stdout.write(`${totalLeaves} leaves`);
-    if (mapLeaf.size === totalLeaves) {
-      console.log(' (unique)');
-    } else {
-      process.stdout.write(`\n${mapLeaf.size} unique leaves\n`);
+    console.log(`# ${mapLeaf.size}\t${dataset}\t${attrId}\t${attr.datamodel}`);
+    if (mapLeaf.size !== totalLeaves) {
+      console.log(`${totalLeaves} leaves`);
     }
     if (isDAG) {
       console.log(`DAG ${countDAG} ex. ${dagExample}`);
@@ -135,12 +132,9 @@ n    }
       });
     }
   } else {
-    console.log(`= ${mapId.size} ${dataset}\t${attrId}`);
-    process.stdout.write(`${totalIds} ids`);
-    if (mapId.size === totalIds) {
-      console.log(' (unique)');
-    } else {
-      process.stdout.write(`\n${mapId.size} unique ids\n`);
+    console.log(`# ${mapId.size}\t${dataset}\t${attrId}\t${attr.datamodel}`);
+    if (mapId.size !== totalIds) {
+      console.log(`${totalIds} ids`);
     }
     if (isDAG) {
       console.log(`duplicated ${countDAG} ex. ${dagExample}`);
