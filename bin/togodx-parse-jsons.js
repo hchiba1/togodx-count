@@ -59,12 +59,12 @@ function parseJson(dataset, attrId, attr) {
   const obj = JSON.parse(input.toString());
 
   let rootId;
-  let mapId = new Map();
+  let uniqIds = new Map();
   let mapParent = new Map();
   let isDAG = false;
   let countDAG = 0;
   let dagExample = '';
-  let totalIds = 0;
+  let totalCount = 0;
 
   obj.forEach((elem) => {
     if (!elem.id) {
@@ -72,15 +72,15 @@ function parseJson(dataset, attrId, attr) {
     }
 
     if (attr.datamodel === 'distribution') {
-      totalIds++;
-      mapId.set(elem.id, true);
+      totalCount++;
+      uniqIds.set(elem.id, true);
       saveDatasetId(dataset, elem.id);
     } else {
       if (elem.root) {
         checkRoot(elem);
       } else if (elem.leaf === true) {
-        totalIds++;
-        mapId.set(elem.id, true);
+        totalCount++;
+        uniqIds.set(elem.id, true);
         saveDatasetId(dataset, elem.id);
       } else if (elem.parent) {
         if (mapParent.has(elem.id)) {
@@ -94,9 +94,9 @@ function parseJson(dataset, attrId, attr) {
     }
   });
 
-  console.log(`# ${mapId.size}\t${dataset}\t${attrId}\t${attr.datamodel}`);
-  if (mapId.size !== totalIds) {
-    console.log(`${totalIds} ids`);
+  console.log(`# ${uniqIds.size}\t${dataset}\t${attrId}\t${attr.datamodel}`);
+  if (uniqIds.size !== totalCount) {
+    console.log(`${totalCount} ids`);
   }
   if (isDAG) {
     console.log(`DAG ${countDAG} ex. ${dagExample}`);
