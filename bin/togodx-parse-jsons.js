@@ -72,18 +72,13 @@ function parseJson(dataset, attrId, attr) {
 
   obj.forEach((elem) => {
     if (attr.datamodel === 'distribution') {
+      mapId.set(elem.id, true);
       saveDatasetId(dataset, elem.id);
       totalIds++;
     }
     if (!elem.id) {
       console.log(elem);
     }
-    if (!mapId.has(elem.id)) {
-      mapId.set(elem.id, true);
-    }
-    // if (!elem.label) {
-    //   console.log(elem);
-    // }
 
     if (elem.root) {
       if (elem.root === true) {
