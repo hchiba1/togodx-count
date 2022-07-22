@@ -60,80 +60,67 @@ function parseJson(dataset, attrId, attr) {
 
   let rootId;
   let mapId = new Map();
-  let mapLeaf = new Map();
   let mapParent = new Map();
   let mapCategory = new Map();
   let mapCategoryId = new Map();
   let isDAG = false;
   let countDAG = 0;
   let dagExample = '';
-  let totalLeaves = 0;
   let totalIds = 0;
 
   obj.forEach((elem) => {
-    if (attr.datamodel === 'distribution') {
-      mapId.set(elem.id, true);
-      saveDatasetId(dataset, elem.id);
-      totalIds++;
-    }
     if (!elem.id) {
       console.log(elem);
     }
 
-    if (elem.root) {
-      if (elem.root === true) {
-        if (rootId) {
-          console.log('error: rootId=', rootId);
-        }
-        rootId = elem.id;
-      } else {
-        console.log('error: root is', elem);
-      }
-    } else if (elem.leaf === true) {
-      totalLeaves += 1;
+    if (attr.datamodel === 'distribution') {
+      mapId.set(elem.id, true);
       saveDatasetId(dataset, elem.id);
-      if (!mapLeaf.has(elem.id)) {
-        mapLeaf.set(elem.id, true);
+      totalIds++;
+    } else {
+      if (elem.root) {
+        if (elem.root === true) {
+          if (rootId) {
+            console.log('error: rootId=', rootId);
+          }
+          rootId = elem.id;
+        } else {
+          console.log('error: root is', elem);
+        }
+      } else if (elem.leaf === true) {
+        totalIds++;
+        saveDatasetId(dataset, elem.id);
+        mapId.set(elem.id, true);
+        if (mapCategory.has(elem.parent)) {
+          const count = mapCategory.get(elem.parent);
+          mapCategory.set(elem.parent, count + 1);
+        } else {
+          mapCategory.set(elem.parent, 1);
+        }
+      } else if (elem.parent) {
+        if (mapParent.has(elem.id)) {
+          isDAG = true;
+          countDAG++;
+          dagExample = `${elem.id} (${elem.label})` + ' -> ' + mapParent.get(elem.id) + ', ' + elem.parent;
+        } else {
+          mapParent.set(elem.id, elem.parent)
+        }
       }
-      if (mapCategory.has(elem.parent)) {
-        const count = mapCategory.get(elem.parent);
-        mapCategory.set(elem.parent, count + 1);
-      } else {
-        mapCategory.set(elem.parent, 1);
-      }
-    } else if (elem.parent) {
-      if (mapParent.has(elem.id)) {
-        isDAG = true;
-        countDAG++;
-        dagExample = `${elem.id} (${elem.label})` + ' -> ' + mapParent.get(elem.id) + ', ' + elem.parent;
-      } else {
-        mapParent.set(elem.id, elem.parent)
-      }
+      mapCategoryId.set(elem.id, elem.label);
     }
-    mapCategoryId.set(elem.id, elem.label);
   });
 
-  if (mapLeaf.size) {
-    console.log(`# ${mapLeaf.size}\t${dataset}\t${attrId}\t${attr.datamodel}`);
-    if (mapLeaf.size !== totalLeaves) {
-      console.log(`${totalLeaves} leaves`);
-    }
-    if (isDAG) {
-      console.log(`DAG ${countDAG} ex. ${dagExample}`);
-    }
-    if (opts.verbose) {
-      mapCategory.forEach((v, k) => {
-        console.log(`${k} ${v}`, mapCategoryId.get(k));
-      });
-    }
-  } else {
-    console.log(`# ${mapId.size}\t${dataset}\t${attrId}\t${attr.datamodel}`);
-    if (mapId.size !== totalIds) {
-      console.log(`${totalIds} ids`);
-    }
-    if (isDAG) {
-      console.log(`duplicated ${countDAG} ex. ${dagExample}`);
-    }
+  console.log(`# ${mapId.size}\t${dataset}\t${attrId}\t${attr.datamodel}`);
+  if (mapId.size !== totalIds) {
+    console.log(`${totalIds} ids`);
+  }
+  if (isDAG) {
+    console.log(`DAG ${countDAG} ex. ${dagExample}`);
+  }
+  if (opts.verbose) {
+    mapCategory.forEach((v, k) => {
+      console.log(`${k} ${v}`, mapCategoryId.get(k));
+    });
   }
 }
 
