@@ -72,16 +72,16 @@ function parseJson(dataset, attrId, attr) {
     }
 
     if (attr.datamodel === 'distribution') {
+      totalIds++;
       mapId.set(elem.id, true);
       saveDatasetId(dataset, elem.id);
-      totalIds++;
     } else {
       if (elem.root) {
         checkRoot(elem);
       } else if (elem.leaf === true) {
         totalIds++;
-        saveDatasetId(dataset, elem.id);
         mapId.set(elem.id, true);
+        saveDatasetId(dataset, elem.id);
       } else if (elem.parent) {
         if (mapParent.has(elem.id)) {
           isDAG = true;
