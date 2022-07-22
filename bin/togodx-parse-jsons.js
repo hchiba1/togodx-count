@@ -77,14 +77,7 @@ function parseJson(dataset, attrId, attr) {
       totalIds++;
     } else {
       if (elem.root) {
-        if (elem.root === true) {
-          if (rootId) {
-            console.error('error: rootId=', rootId);
-          }
-          rootId = elem.id;
-        } else {
-          console.error('error: root is', elem);
-        }
+        checkRoot(elem);
       } else if (elem.leaf === true) {
         totalIds++;
         saveDatasetId(dataset, elem.id);
@@ -107,6 +100,17 @@ function parseJson(dataset, attrId, attr) {
   }
   if (isDAG) {
     console.log(`DAG ${countDAG} ex. ${dagExample}`);
+  }
+
+  function checkRoot (elem) {
+    if (elem.root === true) {
+      if (rootId) {
+        console.error('error: rootId=', rootId);
+      }
+      rootId = elem.id;
+    } else {
+      console.error('error: root is', elem);
+    }
   }
 }
 
