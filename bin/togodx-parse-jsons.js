@@ -61,8 +61,6 @@ function parseJson(dataset, attrId, attr) {
   let rootId;
   let mapId = new Map();
   let mapParent = new Map();
-  let mapCategory = new Map();
-  let mapCategoryId = new Map();
   let isDAG = false;
   let countDAG = 0;
   let dagExample = '';
@@ -70,7 +68,7 @@ function parseJson(dataset, attrId, attr) {
 
   obj.forEach((elem) => {
     if (!elem.id) {
-      console.log(elem);
+      console.error(elem);
     }
 
     if (attr.datamodel === 'distribution') {
@@ -81,22 +79,16 @@ function parseJson(dataset, attrId, attr) {
       if (elem.root) {
         if (elem.root === true) {
           if (rootId) {
-            console.log('error: rootId=', rootId);
+            console.error('error: rootId=', rootId);
           }
           rootId = elem.id;
         } else {
-          console.log('error: root is', elem);
+          console.error('error: root is', elem);
         }
       } else if (elem.leaf === true) {
         totalIds++;
         saveDatasetId(dataset, elem.id);
         mapId.set(elem.id, true);
-        if (mapCategory.has(elem.parent)) {
-          const count = mapCategory.get(elem.parent);
-          mapCategory.set(elem.parent, count + 1);
-        } else {
-          mapCategory.set(elem.parent, 1);
-        }
       } else if (elem.parent) {
         if (mapParent.has(elem.id)) {
           isDAG = true;
@@ -106,7 +98,6 @@ function parseJson(dataset, attrId, attr) {
           mapParent.set(elem.id, elem.parent)
         }
       }
-      mapCategoryId.set(elem.id, elem.label);
     }
   });
 
@@ -116,11 +107,6 @@ function parseJson(dataset, attrId, attr) {
   }
   if (isDAG) {
     console.log(`DAG ${countDAG} ex. ${dagExample}`);
-  }
-  if (opts.verbose) {
-    mapCategory.forEach((v, k) => {
-      console.log(`${k} ${v}`, mapCategoryId.get(k));
-    });
   }
 }
 
