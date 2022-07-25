@@ -114,9 +114,10 @@ function parseJson(dataset, attrId, attr) {
   }
 }
 
-console.log();
 for (let i=0; i<datasets.length; i++) {
-  console.log(datasets[i] + '\t' + datasetIdMaps[i].size);
+  for (let key of datasetIdMaps[i].keys()) {
+    console.error(`${datasets[i]}\t${key}`);
+  }
 }
 
 function saveDatasetId(dataset, id) {
